@@ -144,3 +144,6 @@ log_dir/
 *.mp4
 *.zip
 *.pth
+
+configs/
+splits/

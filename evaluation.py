@@ -187,6 +187,7 @@ class Evaluation(object):
         self.im_path_list = []
         if self.opt.dataset == 'kitti':
             real_eigen = readlines(os.path.join(os.path.dirname(__file__), "splits", "eigen", "test_files.txt"))
+            print("!!!!!!!!!!!!!!!!!!!!!!1",real_eigen)
             dataset = KITTIRAWDataset(data_path=self.opt.real_data_path, filenames=real_eigen,
                                       height=self.opt.height, width=self.opt.width,
                                       frame_idxs=[0], num_scales=4, is_train=False,
@@ -194,7 +195,7 @@ class Evaluation(object):
             self.dataloader = DataLoader(dataset, self.opt.batch_size, shuffle=False, num_workers=opt.num_workers,
                                          pin_memory=True, drop_last=False)
             print('Total number of images in {} dataset: {}'.format(self.opt.dataset, dataset.__len__()))
-        if self.opt.dataset == 'kitti_depth':
+        elif self.opt.dataset == 'kitti_depth':
             real_eigen = readlines(os.path.join(os.path.dirname(__file__), "splits", "eigen", "test_files.txt"))
             dataset = KITTIDepthDataset(data_path=self.opt.real_data_path, filenames=real_eigen,
                                         height=self.opt.height, width=self.opt.width,
