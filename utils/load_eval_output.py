@@ -33,7 +33,7 @@ import torch
 import argparse
 from tqdm import tqdm
 
-from utils import depth_visualize
+from utils_local import depth_visualize
 
 parser = argparse.ArgumentParser(description="MonoDEVSNet test options")
 parser.add_argument("--file_path",
