@@ -187,11 +187,11 @@ class Evaluation(object):
         self.im_path_list = []
         if self.opt.dataset == 'kitti':
             real_eigen = readlines(os.path.join(os.path.dirname(__file__), "splits", "eigen", "test_files.txt"))
-            print("!!!!!!!!!!!!!!!!!!!!!!1",real_eigen)
             dataset = KITTIRAWDataset(data_path=self.opt.real_data_path, filenames=real_eigen,
                                       height=self.opt.height, width=self.opt.width,
                                       frame_idxs=[0], num_scales=4, is_train=False,
                                       img_ext=img_ext)
+            print(dataset.data_path," ",dataset.filenames, " height : ",dataset.height," width : ",dataset.width )
             self.dataloader = DataLoader(dataset, self.opt.batch_size, shuffle=False, num_workers=opt.num_workers,
                                          pin_memory=True, drop_last=False)
             print('Total number of images in {} dataset: {}'.format(self.opt.dataset, dataset.__len__()))
@@ -219,7 +219,8 @@ class Evaluation(object):
             # Eigen split - LIDAR data
             gt_path = os.path.join(os.path.dirname(__file__), "splits", "eigen", "gt_depths.npz")
             self.gt_depths = np.load(gt_path, fix_imports=True, encoding='latin1', allow_pickle=True)["data"]
-
+            print("gt_depths!!!!!!!!!!!!!!!!!!!!!!1 : ",self.gt_depths[0].shape)
+            # np.savetxt('gt_save.txt',self.gt_depths[0], fmt = '%2d', delimiter = ',')
     def invdepth_to_depth(self, inv_depth):
         return 1 / self.opt.max_depth + (1 / self.opt.min_depth - 1 / self.opt.max_depth) * inv_depth
 
@@ -248,12 +249,13 @@ class Evaluation(object):
                 pred_depth_raw = 3. / pred_disp.copy()
 
                 # save resized rgb,and raw pred depth
+                #pred_depth_t ?????
                 self.rgbs.append(input_color_np)
                 self.pred_depths.append(pred_depth_raw)
                 pred_depth_t = torch.tensor(pred_depth_raw).unsqueeze(0).unsqueeze(0)
                 pred_depth_t[pred_depth_t < self.opt.min_depth] = self.opt.min_depth
                 pred_depth_t[pred_depth_t > self.opt.max_depth] = self.opt.max_depth
-
+                print(pred_depth)
                 # Save information
                 folder_name = os.path.dirname(im_path).split('/')[-1]
                 depth_save_path = im_path.replace(folder_name + '/',
