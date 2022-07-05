@@ -255,7 +255,8 @@ class Evaluation(object):
                 pred_depth_t = torch.tensor(pred_depth_raw).unsqueeze(0).unsqueeze(0)
                 pred_depth_t[pred_depth_t < self.opt.min_depth] = self.opt.min_depth
                 pred_depth_t[pred_depth_t > self.opt.max_depth] = self.opt.max_depth
-                print(pred_depth)
+                print("!!!!!!!!!!!!!!!!!!!!!1pred_depth_t : ",pred_depth_t)
+                # np.savetxt('gt_save.txt',self.gt_depths[0], fmt = '%2d', delimiter = ',')
                 # Save information
                 folder_name = os.path.dirname(im_path).split('/')[-1]
                 depth_save_path = im_path.replace(folder_name + '/',
@@ -296,7 +297,7 @@ class Evaluation(object):
                 except Exception as _:
                     total_invalid_images += 1
                     continue
-
+                
                 # Related to depth, segmentation, edges
                 input_color = data[("color", 0, 0)].to(self.device)
 
@@ -314,12 +315,12 @@ class Evaluation(object):
                 if 'kitti' in self.opt.dataset:
                     if self.opt.dataset == 'kitti_depth':
                         self.gt_depths.append(data['depth_gt'][0, 0].cpu().numpy())
-
+                print("iter_l : ",iter_l)
                 gt_depth = self.gt_depths[iter_l]
                 gt_height, gt_width = gt_depth.shape
                 pred_disp = cv2.resize(pred_disp, (gt_width, gt_height), cv2.INTER_NEAREST)
                 pred_depth = self.opt.syn_scaling_factor / pred_disp.copy()
-
+                np.savetxt('gt_.txt',gt_depth, fmt = '%2d', delimiter = ',')
                 if self.opt.do_kb_crop:
                     crop_height, crop_width = 352, 1216
                     if gt_height == 192 or gt_width == 640:
@@ -332,25 +333,34 @@ class Evaluation(object):
                 else:
                     top_margin, left_margin = 0, 0
                     crop_height, crop_width = gt_depth.shape
-
+                print("!!!!!!!!!!!!!!!!!!!!!pred_depth : ",pred_depth)
                 # Eigen crop
                 mask = np.logical_and(gt_depth > self.opt.min_depth, gt_depth < self.opt.max_depth)
                 crop = np.array([0.40810811 * gt_height, 0.99189189 * gt_height,
                                  0.03594771 * gt_width, 0.96405229 * gt_width]).astype(np.int32)
                 crop_mask = np.zeros(mask.shape)
                 crop_mask[crop[0]:crop[1], crop[2]:crop[3]] = 1
+                print("crop_mask : ",crop_mask)
+                # np.savetxt('crop_mask.txt',crop_mask, fmt = '%2d', delimiter = ',')
                 mask = np.logical_and(mask, crop_mask)
 
                 gt_depth[gt_depth < self.opt.min_depth] = self.opt.min_depth
                 gt_depth[gt_depth > self.opt.max_depth] = self.opt.max_depth
                 pred_depth[pred_depth < self.opt.min_depth] = self.opt.min_depth
                 pred_depth[pred_depth > self.opt.max_depth] = self.opt.max_depth
-
+                print("mask : ",mask)
+                print("gt_depth : ",gt_depth.shape)
+                print(" pred_depth : ", pred_depth.shape)
+                print("gt_depth[mask] : ",gt_depth[mask].shape)
+                print(" pred_depth[mask] : ", pred_depth[mask].shape)
+                # np.savetxt('gt_save.txt',gt_depth[mask], fmt = '%2d', delimiter = ',')
+                # np.savetxt('gt_.txt',gt_depth, fmt = '%2d', delimiter = ',')
+                # np.savetxt('pred_save.txt',pred_depth[mask], fmt = '%2d', delimiter = ',')
                 errors_absolute.append(compute_errors(gt_depth[mask], pred_depth[mask]))
-
                 # save resized rgb,and raw pred depth
                 self.rgbs.append(input_color.squeeze().cpu().permute(1, 2, 0).numpy().copy())
                 self.pred_depths.append(pred_depth_raw)
+                # print("len : !!!!!",len(self.pred_depths))
 
         if 'kitti' in self.opt.dataset:
             errors_absolute = np.array(errors_absolute).mean(0)
@@ -419,6 +429,7 @@ if __name__ == "__main__":
     opts = MonoDEVSTestOptions(base_path=os.path.join(os.path.dirname(os.path.abspath(__file__))))
     opts = opts.parse()
     eval_main = Evaluation(opt=opts)
+    print("eval_main : ",eval_main)
     eval_main.eval()
 
     stop_here = 1
