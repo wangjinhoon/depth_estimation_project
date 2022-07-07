@@ -297,7 +297,7 @@ class Evaluation(object):
                 except Exception as _:
                     total_invalid_images += 1
                     continue
-                
+
                 # Related to depth, segmentation, edges
                 input_color = data[("color", 0, 0)].to(self.device)
 
@@ -320,7 +320,7 @@ class Evaluation(object):
                 gt_height, gt_width = gt_depth.shape
                 pred_disp = cv2.resize(pred_disp, (gt_width, gt_height), cv2.INTER_NEAREST)
                 pred_depth = self.opt.syn_scaling_factor / pred_disp.copy()
-                np.savetxt('gt_.txt',gt_depth, fmt = '%2d', delimiter = ',')
+                #np.savetxt('gt_.txt',gt_depth, fmt = '%2d', delimiter = ',')
                 if self.opt.do_kb_crop:
                     crop_height, crop_width = 352, 1216
                     if gt_height == 192 or gt_width == 640:
@@ -429,7 +429,6 @@ if __name__ == "__main__":
     opts = MonoDEVSTestOptions(base_path=os.path.join(os.path.dirname(os.path.abspath(__file__))))
     opts = opts.parse()
     eval_main = Evaluation(opt=opts)
-    print("eval_main : ",eval_main)
     eval_main.eval()
 
     stop_here = 1
