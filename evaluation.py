@@ -263,6 +263,7 @@ class Evaluation(object):
                 self.rgbs.append(input_color_np)
                 self.pred_depths.append(pred_depth_raw)
 
+
                 pred_depth_t = torch.tensor(pred_depth_raw)
                 #print(pred_depth.shape)
                 pred_depth_t = torch.tensor(pred_depth_raw).unsqueeze(0).unsqueeze(0) # 0번째 인덱스에 차원 2개 추가
@@ -327,7 +328,7 @@ class Evaluation(object):
                 except Exception as _:
                     total_invalid_images += 1
                     continue
-
+                
                 # Related to depth, segmentation, edges
                 input_color = data[("color", 0, 0)].to(self.device)
 
@@ -351,6 +352,7 @@ class Evaluation(object):
                 pred_disp = cv2.resize(pred_disp, (gt_width, gt_height), cv2.INTER_NEAREST)
                 pred_depth = self.opt.syn_scaling_factor / pred_disp.copy()
                 #np.savetxt('gt_.txt',gt_depth, fmt = '%2d', delimiter = ',')
+
                 if self.opt.do_kb_crop:
                     crop_height, crop_width = 352, 1216
                     if gt_height == 192 or gt_width == 640:
@@ -459,6 +461,7 @@ if __name__ == "__main__":
     opts = MonoDEVSTestOptions(base_path=os.path.join(os.path.dirname(os.path.abspath(__file__))))
     opts = opts.parse()
     eval_main = Evaluation(opt=opts)
+    print("eval_main : ",eval_main)
     eval_main.eval()
 
     stop_here = 1
