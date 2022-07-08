@@ -14,3 +14,4 @@ for (root, directories, files) in os.walk(dir_path):
         fw.write(file_path + '\n')
 fw.close()
 print(cnt)
+
