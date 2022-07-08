@@ -34,7 +34,6 @@ import sys
 import time
 from datetime import date
 from os.path import expanduser
-
 import cv2
 import numpy as np
 import torch
@@ -219,8 +218,12 @@ class Evaluation(object):
             # Eigen split - LIDAR data
             gt_path = os.path.join(os.path.dirname(__file__), "splits", "eigen", "gt_depths.npz")
             self.gt_depths = np.load(gt_path, fix_imports=True, encoding='latin1', allow_pickle=True)["data"]
-            print("gt_depths!!!!!!!!!!!!!!!!!!!!!!1 : ",self.gt_depths[0].shape)
-            # np.savetxt('gt_save.txt',self.gt_depths[0], fmt = '%2d', delimiter = ',')
+
+        else:
+            gt_path = os.path.join(os.path.dirname(__file__), "splits", "eigen", "data.npz")
+            self.gt_depths = np.load(gt_path, fix_imports=True, encoding='latin1', allow_pickle=True)["data"]
+
+
     def invdepth_to_depth(self, inv_depth):
         return 1 / self.opt.max_depth + (1 / self.opt.min_depth - 1 / self.opt.max_depth) * inv_depth
 
@@ -248,15 +251,43 @@ class Evaluation(object):
                 pred_disp = pred_disp[0, 0].cpu().numpy()
                 pred_depth_raw = 3. / pred_disp.copy()
 
+                ##################################### added code ###########################################
+                gt_depth = self.gt_depths[iter_l]
+                gt_height, gt_width = gt_depth.shape
+                pred_disp = cv2.resize(pred_disp, (gt_width, gt_height), cv2.INTER_NEAREST)
+                pred_depth = self.opt.syn_scaling_factor / pred_disp.copy()
+                ############################################################################################
+
                 # save resized rgb,and raw pred depth
                 #pred_depth_t ?????
                 self.rgbs.append(input_color_np)
                 self.pred_depths.append(pred_depth_raw)
-                pred_depth_t = torch.tensor(pred_depth_raw).unsqueeze(0).unsqueeze(0)
-                pred_depth_t[pred_depth_t < self.opt.min_depth] = self.opt.min_depth
-                pred_depth_t[pred_depth_t > self.opt.max_depth] = self.opt.max_depth
-                print("!!!!!!!!!!!!!!!!!!!!!1pred_depth_t : ",pred_depth_t)
-                # np.savetxt('gt_save.txt',self.gt_depths[0], fmt = '%2d', delimiter = ',')
+
+
+                pred_depth_t = torch.tensor(pred_depth_raw)
+                #print(pred_depth.shape)
+                pred_depth_t = torch.tensor(pred_depth_raw).unsqueeze(0).unsqueeze(0) # 0번째 인덱스에 차원 2개 추가
+                
+                ##################################### added code ###########################################
+            
+
+                gt_depth[gt_depth < self.opt.min_depth] = self.opt.min_depth
+                gt_depth[gt_depth > self.opt.max_depth] = self.opt.max_depth
+                pred_depth[pred_depth < self.opt.min_depth] = self.opt.min_depth
+                pred_depth[pred_depth > self.opt.max_depth] = self.opt.max_depth
+
+                # pred_depth_t[pred_depth_t < self.opt.min_depth] = self.opt.min_depth
+                # pred_depth_t[pred_depth_t > self.opt.max_depth] = self.opt.max_depth
+
+                errors_absolute.append(compute_errors(gt_depth, pred_depth))
+                errors_absolute = np.array(errors_absolute).mean(0)
+                print("/n")
+                print("  " + ("{:>8} | " * 7).format("abs_rel", "sq_rel", "rmse", "rmse_log", "a1", "a2", "a3"))
+                print(("&{: 8.4f}  " * 7).format(*errors_absolute.tolist()) + "\\\\")
+                ############################################################################################
+
+
+
                 # Save information
                 folder_name = os.path.dirname(im_path).split('/')[-1]
                 depth_save_path = im_path.replace(folder_name + '/',
@@ -320,7 +351,8 @@ class Evaluation(object):
                 gt_height, gt_width = gt_depth.shape
                 pred_disp = cv2.resize(pred_disp, (gt_width, gt_height), cv2.INTER_NEAREST)
                 pred_depth = self.opt.syn_scaling_factor / pred_disp.copy()
-                np.savetxt('gt_.txt',gt_depth, fmt = '%2d', delimiter = ',')
+                #np.savetxt('gt_.txt',gt_depth, fmt = '%2d', delimiter = ',')
+
                 if self.opt.do_kb_crop:
                     crop_height, crop_width = 352, 1216
                     if gt_height == 192 or gt_width == 640:
@@ -349,7 +381,7 @@ class Evaluation(object):
                 pred_depth[pred_depth < self.opt.min_depth] = self.opt.min_depth
                 pred_depth[pred_depth > self.opt.max_depth] = self.opt.max_depth
                 print("mask : ",mask)
-                print("gt_depth : ",gt_depth)
+                print("gt_depth : ",gt_depth.shape)
                 print(" pred_depth : ", pred_depth.shape)
                 print("gt_depth[mask] : ",gt_depth[mask].shape)
                 print(" pred_depth[mask] : ", pred_depth[mask].shape)
