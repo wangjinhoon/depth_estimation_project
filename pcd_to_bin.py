@@ -1,7 +1,13 @@
 
 import pcl
 import struct
+import os
 
+folder_path = "/home/wjh/gangnam2_pcd/"
+save_path = "/home/wjh/MonoDEVSNet/bin"
+
+if not os.path.isdir(save_path):
+    os.mkdir(save_path)
 def XYZ_to_XYZRGB(XYZ_cloud, color):
     XYZRGB_cloud = pcl.PointCloud_PointXYZRGB()
     points_list = []
@@ -20,14 +26,19 @@ def rgb_to_float(color):
     hex_b = (0xff & color[2])
 
     hex_rgb = hex_r | hex_g | hex_b
-
     float_rgb = struct.unpack('f', struct.pack('i', hex_rgb))[0]
 
     return float_rgb
 
+def start():
+    file_list = os.listdir(folder_path)
 
-pc = pcl.load("/home/wjh/gangnam2_pcd/1656481494.537210464.pcd") # "pc.from_file" Deprecated
-pc_rgb=XYZ_to_XYZRGB(pc,[0,0,0] )
-pa = pc_rgb.to_array()
+    for i in file_list:
+        pc = pcl.load(folder_path+i) # "pc.from_file" Deprecated
+        pc_rgb=XYZ_to_XYZRGB(pc,[0,0,0] )
+        pa = pc_rgb.to_array()
+        os.chdir(save_path)
+        pa.tofile(i+'.bin')
 
-pa.tofile('./1540261303.747807979.bin')
+if __name__ == "__main__":
+    start()

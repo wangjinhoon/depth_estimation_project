@@ -149,3 +149,5 @@ requirements.txt
 configs/
 splits/
 
+bin/
+gt/
