@@ -144,3 +144,10 @@ log_dir/
 *.mp4
 *.zip
 *.pth
+
+requirements.txt
+configs/
+splits/
+
+bin/
+gt/

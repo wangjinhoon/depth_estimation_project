@@ -190,10 +190,11 @@ class Evaluation(object):
                                       height=self.opt.height, width=self.opt.width,
                                       frame_idxs=[0], num_scales=4, is_train=False,
                                       img_ext=img_ext)
+            print(dataset.data_path," ",dataset.filenames, " height : ",dataset.height," width : ",dataset.width )
             self.dataloader = DataLoader(dataset, self.opt.batch_size, shuffle=False, num_workers=opt.num_workers,
                                          pin_memory=True, drop_last=False)
             print('Total number of images in {} dataset: {}'.format(self.opt.dataset, dataset.__len__()))
-        if self.opt.dataset == 'kitti_depth':
+        elif self.opt.dataset == 'kitti_depth':
             real_eigen = readlines(os.path.join(os.path.dirname(__file__), "splits", "eigen", "test_files.txt"))
             dataset = KITTIDepthDataset(data_path=self.opt.real_data_path, filenames=real_eigen,
                                         height=self.opt.height, width=self.opt.width,
@@ -217,12 +218,11 @@ class Evaluation(object):
             # Eigen split - LIDAR data
             gt_path = os.path.join(os.path.dirname(__file__), "splits", "eigen", "gt_depths.npz")
             self.gt_depths = np.load(gt_path, fix_imports=True, encoding='latin1', allow_pickle=True)["data"]
-            
-        ###########################################3 added code ########################################
+
         else:
             gt_path = os.path.join(os.path.dirname(__file__), "splits", "eigen", "data.npz")
             self.gt_depths = np.load(gt_path, fix_imports=True, encoding='latin1', allow_pickle=True)["data"]
-        ################################################################################################
+
 
     def invdepth_to_depth(self, inv_depth):
         return 1 / self.opt.max_depth + (1 / self.opt.min_depth - 1 / self.opt.max_depth) * inv_depth
@@ -259,8 +259,10 @@ class Evaluation(object):
                 ############################################################################################
 
                 # save resized rgb,and raw pred depth
+                #pred_depth_t ?????
                 self.rgbs.append(input_color_np)
                 self.pred_depths.append(pred_depth_raw)
+
                 pred_depth_t = torch.tensor(pred_depth_raw)
                 #print(pred_depth.shape)
                 pred_depth_t = torch.tensor(pred_depth_raw).unsqueeze(0).unsqueeze(0) # 0번째 인덱스에 차원 2개 추가
@@ -282,6 +284,8 @@ class Evaluation(object):
                 print("  " + ("{:>8} | " * 7).format("abs_rel", "sq_rel", "rmse", "rmse_log", "a1", "a2", "a3"))
                 print(("&{: 8.4f}  " * 7).format(*errors_absolute.tolist()) + "\\\\")
                 ############################################################################################
+
+
 
                 # Save information
                 folder_name = os.path.dirname(im_path).split('/')[-1]
@@ -341,12 +345,12 @@ class Evaluation(object):
                 if 'kitti' in self.opt.dataset:
                     if self.opt.dataset == 'kitti_depth':
                         self.gt_depths.append(data['depth_gt'][0, 0].cpu().numpy())
-
+                print("iter_l : ",iter_l)
                 gt_depth = self.gt_depths[iter_l]
                 gt_height, gt_width = gt_depth.shape
                 pred_disp = cv2.resize(pred_disp, (gt_width, gt_height), cv2.INTER_NEAREST)
                 pred_depth = self.opt.syn_scaling_factor / pred_disp.copy()
-
+                #np.savetxt('gt_.txt',gt_depth, fmt = '%2d', delimiter = ',')
                 if self.opt.do_kb_crop:
                     crop_height, crop_width = 352, 1216
                     if gt_height == 192 or gt_width == 640:
@@ -359,25 +363,34 @@ class Evaluation(object):
                 else:
                     top_margin, left_margin = 0, 0
                     crop_height, crop_width = gt_depth.shape
-
+                print("!!!!!!!!!!!!!!!!!!!!!pred_depth : ",pred_depth)
                 # Eigen crop
                 mask = np.logical_and(gt_depth > self.opt.min_depth, gt_depth < self.opt.max_depth)
                 crop = np.array([0.40810811 * gt_height, 0.99189189 * gt_height,
                                  0.03594771 * gt_width, 0.96405229 * gt_width]).astype(np.int32)
                 crop_mask = np.zeros(mask.shape)
                 crop_mask[crop[0]:crop[1], crop[2]:crop[3]] = 1
+                print("crop_mask : ",crop_mask)
+                # np.savetxt('crop_mask.txt',crop_mask, fmt = '%2d', delimiter = ',')
                 mask = np.logical_and(mask, crop_mask)
 
                 gt_depth[gt_depth < self.opt.min_depth] = self.opt.min_depth
                 gt_depth[gt_depth > self.opt.max_depth] = self.opt.max_depth
                 pred_depth[pred_depth < self.opt.min_depth] = self.opt.min_depth
                 pred_depth[pred_depth > self.opt.max_depth] = self.opt.max_depth
-
+                print("mask : ",mask)
+                print("gt_depth : ",gt_depth.shape)
+                print(" pred_depth : ", pred_depth.shape)
+                print("gt_depth[mask] : ",gt_depth[mask].shape)
+                print(" pred_depth[mask] : ", pred_depth[mask].shape)
+                # np.savetxt('gt_save.txt',gt_depth[mask], fmt = '%2d', delimiter = ',')
+                # np.savetxt('gt_.txt',gt_depth, fmt = '%2d', delimiter = ',')
+                # np.savetxt('pred_save.txt',pred_depth[mask], fmt = '%2d', delimiter = ',')
                 errors_absolute.append(compute_errors(gt_depth[mask], pred_depth[mask]))
-
                 # save resized rgb,and raw pred depth
                 self.rgbs.append(input_color.squeeze().cpu().permute(1, 2, 0).numpy().copy())
                 self.pred_depths.append(pred_depth_raw)
+                # print("len : !!!!!",len(self.pred_depths))
 
         if 'kitti' in self.opt.dataset:
             errors_absolute = np.array(errors_absolute).mean(0)
