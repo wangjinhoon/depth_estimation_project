@@ -20,7 +20,7 @@ def start():
     for j in file_list:
         n+=1
         binary = folder_path + j
-        print(binary)
+        
         with open(f'/home/wjh/MonoDEVSNet/testing/calib/gn2.txt','r') as f:
             calib = f.readlines()
 
@@ -43,7 +43,6 @@ def start():
         cam = np.delete(cam,np.where(cam[2,:]<0)[1],axis=1)
         # get u,v,z
         cam[:2] /= cam[2,:]
-        print(cam)
         # do projection staff
         png = mpimg.imread(img)
         IMG_H,IMG_W = png.shape

@@ -8,6 +8,7 @@ save_path = "/home/wjh/MonoDEVSNet/bin"
 
 if not os.path.isdir(save_path):
     os.mkdir(save_path)
+    
 def XYZ_to_XYZRGB(XYZ_cloud, color):
     XYZRGB_cloud = pcl.PointCloud_PointXYZRGB()
     points_list = []
