@@ -6,8 +6,8 @@ import pandas as pd
 
 sn = int(sys.argv[1]) if len(sys.argv)>1 else 7 #default 0-7517
 name = '%06d'%sn # 6 digit zeropadding
-img = f'./frame000000.png'
-binary = f'./data.bin'
+img = f'./calib_image/2.png'
+binary = f'./bin/1656481494.537210464.pcd.bin'
 with open(f'./testing/calib/gn2.txt','r') as f:
     calib = f.readlines()
 
@@ -57,5 +57,5 @@ np.savetxt('gt_list.txt',gt_list, fmt = '%2d', delimiter = ',')
 plt.scatter([u],[v],c=[z],cmap='rainbow_r',alpha=0.5,s=2)
 plt.colorbar()
 plt.title(name)
-plt.savefig(f'./data_object_image_2/testing/projection/{name}.png',bbox_inches='tight')
+plt.savefig(f'.1.png',bbox_inches='tight')
 plt.show()

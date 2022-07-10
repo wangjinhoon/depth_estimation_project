@@ -139,8 +139,11 @@ class MonoDEVSNetTrainer(Trainer):
         syn_train_dataset = self.syn_dataset(self.opt, csv_file_path=syn_f_path, frame_ids=[0],
                                              num_scales=4, is_train=True)
 
+        # self.opt.split이 왠말이지 갑자기...
         real_f_path = os.path.join(os.path.dirname(__file__), "monodepth2/splits", self.opt.split, "{}_files.txt")
+        print(" real_f_path : ",real_f_path)
         real_filenames = readlines(real_f_path.format("train"))
+        print(" real_filenames : ",real_filenames)
         real_train_dataset = self.real_dataset(data_path=self.opt.real_data_path, filenames=real_filenames,
                                                height=self.opt.height, width=self.opt.width,
                                                frame_idxs=self.opt.frame_ids, num_scales=4, is_train=True,
