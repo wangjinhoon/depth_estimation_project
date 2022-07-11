@@ -16,9 +16,8 @@ if not os.path.isdir(save_path):
 def start():
     n = 0
     file_list = os.listdir(folder_path)
-    print(file_list)
+    file_list = [str(i+1)+".bin" for i in  range(len(file_list))]
     img = f'/home/wjh/MonoDEVSNet/1.png'
-    exit(0)
     for j in file_list:
         n+=1
         binary = folder_path + j
