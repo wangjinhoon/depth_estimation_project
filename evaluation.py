@@ -325,10 +325,12 @@ class Evaluation(object):
                 try:
                     data = data_iter.__next__()
                     iter_l += 1
-                except Exception as _:
+                except Exception as e:
+                    print("e")
+                    print(e)
                     total_invalid_images += 1
                     continue
-                
+
                 # Related to depth, segmentation, edges
                 input_color = data[("color", 0, 0)].to(self.device)
 
@@ -389,6 +391,7 @@ class Evaluation(object):
                 # np.savetxt('gt_.txt',gt_depth, fmt = '%2d', delimiter = ',')
                 # np.savetxt('pred_save.txt',pred_depth[mask], fmt = '%2d', delimiter = ',')
                 errors_absolute.append(compute_errors(gt_depth[mask], pred_depth[mask]))
+                print("문제")
                 # save resized rgb,and raw pred depth
                 self.rgbs.append(input_color.squeeze().cpu().permute(1, 2, 0).numpy().copy())
                 self.pred_depths.append(pred_depth_raw)
