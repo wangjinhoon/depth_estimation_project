@@ -320,6 +320,7 @@ class Evaluation(object):
         errors_absolute, errors_relative, ratios, time_taken, time_for_each_frame, total_time = \
             [], [], [], time.time(), [], time.time()
         data_iter, total_invalid_images, iter_l = iter(self.dataloader), 0, -1
+        print("data_iter : ",data_iter,"self.dataloader : ",len(self.dataloader))
         with torch.no_grad():
             for __ in tqdm(range(self.dataloader.__len__())):
                 try:
