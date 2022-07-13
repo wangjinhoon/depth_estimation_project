@@ -4,12 +4,23 @@ import matplotlib.image as mpimg
 import numpy as np
 import pandas as pd
 
+
+
 sn = int(sys.argv[1]) if len(sys.argv)>1 else 7 #default 0-7517
 name = '%06d'%sn # 6 digit zeropadding
-img = f'./calib_image/2.png'
-binary = f'./bin/1656481494.537210464.pcd.bin'
+img = f'./calib_image/315.png'
+binary = f'./bin/105.bin'
 with open(f'./testing/calib/gn2.txt','r') as f:
     calib = f.readlines()
+
+
+RT = np.matrix(([0.0383869,   -0.999227, -0.00845736,   0.0115501],
+  [0.0682892,   0.0110671,   -0.997604,   -0.430316],
+   [0.996927  , 0.0377174 ,  0.0686613,    -1.53964],
+          [0,           0,           0,           1]
+
+))
+
 
 # P2 (3 x 4) for left eye
 P2 = np.matrix([float(x) for x in calib[2].strip('\n').split(' ')[1:]]).reshape(3,4)
@@ -20,13 +31,15 @@ R0_rect = np.insert(R0_rect,3,values=[0,0,0,1],axis=0)
 Tr_velo_to_cam = np.matrix([float(x) for x in calib[5].strip('\n').split(' ')[1:]]).reshape(3,4)
 Tr_velo_to_cam = np.insert(Tr_velo_to_cam,3,values=[0,0,0,1],axis=0)
 
+
 # read raw data from binary
 scan = np.fromfile(binary, dtype=np.float32).reshape((-1,4))
 points = scan[:, 0:3] # lidar xyz (front, left, up)
 # TODO: use fov filter? 
 velo = np.insert(points,3,1,axis=1).T
 velo = np.delete(velo,np.where(velo[0,:]<0),axis=1)
-cam = P2 * R0_rect * Tr_velo_to_cam * velo 
+cam = P2 * RT * velo 
+
 cam = np.delete(cam,np.where(cam[2,:]<0)[1],axis=1)
 # get u,v,z
 cam[:2] /= cam[2,:]
