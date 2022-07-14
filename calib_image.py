@@ -10,10 +10,13 @@ if not os.path.isdir(save_path):
 
 def start():
     file_list = os.listdir(folder_path)
+    if "._1.png" in file_list:
+        del file_list[file_list.index("._1.png")]
     file_list = [str(i+1)+".png" for i in  range(len(file_list))]
     n = 0
     for i in file_list:
         n+=1
+        print(n)
         img = cv2.imread(folder_path+i, 0)
         height, width = img.shape
         int_param = np.array([[1365.4887468866116, 0.0, 1026.5997744850633],
@@ -23,9 +26,9 @@ def start():
                                 0.00037526691609012837,
                                 -0.06081438434204424])
         int_param_scaling = np.array(
-            [[1046.688720703125, 0.0, 1033.3313677806436, 0.0,],
-            [0.0, 1277.919921875, 460.2549448068021, 0.0,],
-            [0.0, 0.0, 1.0,  0.0,]]
+            [[1046.688720703125, 0.0, 1033.3313677806436, 0.0],
+            [0.0, 1277.919921875, 460.2549448068021, 0.0],
+            [0.0, 0.0, 1.0,  0.0]]
         ).reshape((3, 4))[:3, :3]
 
         rectification = np.eye(3)

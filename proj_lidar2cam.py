@@ -9,8 +9,8 @@ import pandas as pd
 sn = int(sys.argv[1]) if len(sys.argv)>1 else 7 #default 0-7517
 name = '%06d'%sn # 6 digit zeropadding
 
-img = f'./calib_image/315.png'
-binary = f'./bin/105.bin'
+img = f'./calib_image/3.png'
+binary = f'./bin/1.bin'
 
 with open(f'./testing/calib/gn2.txt','r') as f:
     calib = f.readlines()
@@ -70,14 +70,18 @@ for i in range(z[0].size):
     else:
         gt_list[int(v[0,i])][int(u[0,i]) ] = z[0,i]
     
-    # else:
-    #     for x in range(5):
-    #         for y in range(5):
-    #             if  0 <= (int(v[0,i]) - 2 + x) and  (int(v[0,i]) - 2 + x) <= 1085 and 0<= (int(u[0,i]) - 2 + y) and (int(u[0,i]) - 2 + y) <= 2039:
-    #                 if gt_list[int(v[0,i]) - 2 + x ][int(u[0,i]) - 2 + y] < z[0,i] and  gt_list[int(v[0,i]) - 2 + x ][int(u[0,i]) - 2 + y] != 0:
-    #                     break
-    #                 else:
-    #                     gt_list[int(v[0,i])][int(u[0,i]) ] = z[0,i]
+
+for i in range(1048):
+    for j in range(2040):
+        if gt_list[i][j] == 0:
+            continue
+        for x in range(5):
+            for y in range(5):
+                if  0 <= (i - 2 + x) and  (i - 2 + x) <= 1085 and 0<= (j - 2 + y) and (j - 2 + y) <= 2039:
+                    if gt_list[i - 2 + x ][j - 2 + y] < gt_list[i][j] and  gt_list[i - 2 + x ][j - 2 + y] != 0:
+                        gt_list[i][j] = 0
+                    else:
+                        pass
 
 np.savetxt('gt_list.txt',gt_list, fmt = '%2d', delimiter = ',')
 plt.scatter([u],[v],c=[z],cmap='rainbow_r',alpha=0.5,s=2)

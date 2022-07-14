@@ -17,7 +17,7 @@ def start():
     n = 0
     file_list = os.listdir(folder_path)
     file_list = [str(i+1)+".bin" for i in  range(len(file_list))]
-    img = f'/home/wjh/MonoDEVSNet/1.png'
+    img = f'/home/wjh/MonoDEVSNet/image/1.png'
     for j in file_list:
         n+=1
         binary = folder_path + j
@@ -65,6 +65,23 @@ def start():
                 pass
             else:
                 gt_list[int(v[0,i])][int(u[0,i])] = z[0,i]
+        q = 10
+        for i in range(1048):
+            for j in range(2040):
+                if gt_list[i][j] == 0:
+                    continue
+                count = 0
+                for x in range(21):
+                    for y in range(21):
+                        if  0 <= (i - q + x) and  (i - q + x) <= 1085 and 0<= (j - q + y) and (j - q + y) <= 2039:
+                            if abs(gt_list[i - q + x ][j - q + y] - gt_list[i][j]) > 2 and  gt_list[i - q + x ][j - q + y] != 0:
+                                count += 1
+                                if count > 10:
+                                    gt_list[i][j] = 0
+                            else:
+                                pass
+
+        
         os.chdir(save_path)
         np.savetxt(str(n)+'.txt',gt_list, fmt = '%2d', delimiter = ',')
 

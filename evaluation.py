@@ -221,7 +221,7 @@ class Evaluation(object):
 
         ###########################################3 added code ########################################
         else:
-            gt_path = os.path.join(os.path.dirname(__file__), "splits", "eigen", "cali_data.npz")
+            gt_path = os.path.join(os.path.dirname(__file__), "splits", "eigen", "data.npz")
             self.gt_depths = np.load(gt_path, fix_imports=True, encoding='latin1', allow_pickle=True)["data"]
 
 

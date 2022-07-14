@@ -3,7 +3,7 @@ import pcl
 import struct
 import os
 
-folder_path = "/home/wjh/MonoDEVSNet/pcds_sort/"
+folder_path = "/home/wjh/gangnam2_pcd/"
 save_path = "/home/wjh/MonoDEVSNet/bin"
 
 if not os.path.isdir(save_path):
