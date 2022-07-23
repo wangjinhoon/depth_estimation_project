@@ -16,16 +16,10 @@
 # 선정모델
 MONODELSNet: https://github.com/HMRC-AEL/MonoDEVSNet
 
-<br>
 
 ## 특징
 Real World data 비지도학습 + Virtual World data 지도학습을 통해 비지도학습만 있을 때 야기되는 문제점들을 극복.  
 
-
-
-
-
-<br>
 
 ## 선정이유
 - LiDAR 데이터를 GT로 사용
@@ -60,7 +54,6 @@ Real World data 비지도학습 + Virtual World data 지도학습을 통해 비�
 5. 평가에 참여한 픽셀만 보여주는 히트맵 생성
     - image2cv.py
 
-<br>
 
 ## evaluation 코드 수정
 1. gt_data 받아오기
@@ -129,7 +122,6 @@ https://github.com/HMRC-AEL/MonoDEVSNet
     ```
     python get_frame.py --bag_file [bagfile경로] --output_dir [output dir경로] --image_topic [토픽이름]
     ```
-<br>
 
 ## 3. gt값 가공
  - pcd_to_bin.py (save path, pcd file path 설정필요)
