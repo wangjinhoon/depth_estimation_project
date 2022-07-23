@@ -117,7 +117,6 @@ print('avg_FPS: {}' .format(1/avg_time))
 ## 1. 모델 빌드
 MONODELSNet git 참고
 https://github.com/HMRC-AEL/MonoDEVSNet
-<br>
 
 ## 2. bag파일에서 이미지와 라이다 데이터 추출.
 - pointcloud2topcl.py 내 bag파일 경로 & 토픽이름 설정.
@@ -158,12 +157,10 @@ def start():
 ```
  - txt_to_npz.py (txt 파일 path 설정 필요)
 
-<br>
 
 ## 4. pretrained weight 다운로드
 https://drive.google.com/drive/folders/1LZuBsG6XFjYnVwkELMENHjwfyRyRvjEs
 
-<br>
 
 ## 5. evaluation 진행
 - evaluation.py 에 class evaluation init에 gt npz파일 수정.
@@ -179,6 +176,6 @@ python3 evaluation.py --dataset any --models_fcn_name encoder ResNet_18 --num_la
 ## 6. 결과 확인
 ![image](https://user-images.githubusercontent.com/54730375/180585137-c93cdffc-6e92-412a-ac82-8d0c1c0a0987.png)
 
-<br><br>
+<br>
 
 프로젝트 노션 페이지 https://prgrms.notion.site/ACE-61fde8dbf704436a944ed07b31cb2b07
