@@ -170,4 +170,4 @@ python3 evaluation.py --dataset any --models_fcn_name encoder ResNet_18 --num_la
 
 <br>
 
-프로젝트 노션 페이지 https://prgrms.notion.site/ACE-61fde8dbf704436a944ed07b31cb2b07
+[관련 Notion 링크](https://tasteful-dianella-4f4.notion.site/ACElab-621e6698639148f2b765839acc1531f4)
