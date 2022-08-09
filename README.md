@@ -1,4 +1,4 @@
-# ACELAP Project
+# ACELAP Depth estimation Project
 
 # 프로젝트 목표
 이미지와 LiDAR 데이터가 들어있는 bagfile에서 이미지 데이터에 대한 monocular depth estimation을 진행한 후, LiDAR 데이터로 estimated depth를 평가하는 것. 
