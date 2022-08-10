@@ -1,5 +1,5 @@
 # Depth estimation Project
-
+### 팀원 : 왕진훈, 전종원, 박한음
 ### 역할 : 데이터 가공 및 Projection 후 gt_data 추출
 ### 프로젝트 기간 : 2주
 ### 사용 언어 : Python
@@ -176,4 +176,4 @@ python3 evaluation.py --dataset any --models_fcn_name encoder ResNet_18 --num_la
 
 <br>
 
-[관련 Notion 링크](https://tasteful-dianella-4f4.notion.site/ACElab-621e6698639148f2b765839acc1531f4)
+[자세한 내용 Notion 링크](https://tasteful-dianella-4f4.notion.site/ACElab-621e6698639148f2b765839acc1531f4)
