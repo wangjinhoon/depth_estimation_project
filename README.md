@@ -1,8 +1,9 @@
-# ACELAP Depth estimation Project
+# Depth estimation Project
 
 ### 역할 : 데이터 가공 및 Projection 후 gt_data 추출
 ### 프로젝트 기간 : 2주
 ### 사용 언어 : Python
+### 개발 환경 : Ubuntu18.04
 ### 사용할 툴 : MONODELSNet, PCL, OpenCV
 
 # 프로젝트 목표
