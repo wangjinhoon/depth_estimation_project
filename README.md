@@ -176,4 +176,4 @@ python3 evaluation.py --dataset any --models_fcn_name encoder ResNet_18 --num_la
 
 <br>
 
-[자세한 내용 Notion 링크](https://tasteful-dianella-4f4.notion.site/ACElab-621e6698639148f2b765839acc1531f4)
+[자세한 내용 Notion 링크](https://tasteful-dianella-4f4.notion.site/Depth-Estimation-Project-e65cf9328db94e6cac632fa07c732a46)
