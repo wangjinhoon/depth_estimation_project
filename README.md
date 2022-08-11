@@ -4,7 +4,7 @@
 ### 프로젝트 기간 : 2주
 ### 사용 언어 : Python
 ### 개발 환경 : Ubuntu18.04
-### 사용할 툴 : MONODELSNet, PCL, OpenCV
+### 사용 기술 스택 : MONODELSNet, PCL, OpenCV
 
 # 프로젝트 목표
 이미지와 LiDAR 데이터가 들어있는 bagfile에서 이미지 데이터에 대한 monocular depth estimation을 진행한 후, LiDAR 데이터로 estimated depth를 평가하는 것. 
